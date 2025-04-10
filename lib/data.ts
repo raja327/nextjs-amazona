@@ -1,5 +1,5 @@
-import {Data,IProductInput} from '@/types'
-import { toSlug } from './utils'
+import { Data, IProductInput } from '@/types';
+import { toSlug } from './utils';
 
 const products: IProductInput[] = [
   {
@@ -705,11 +705,11 @@ const products: IProductInput[] = [
 
     reviews: [],
   },
-]
+];
 
-const data:Data={
+const data: Data = {
   products,
-    headerMenus: [
+  headerMenus: [
     {
       name: "Today's Deal",
       href: '/search?tag=todays-deal',
@@ -765,6 +765,6 @@ const data:Data={
       url: '/search?category=Wrist Watches',
       isPublished: true,
     },
-  ], 
-}
-  export default data
+  ],
+};
+export default data;
