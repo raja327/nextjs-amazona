@@ -45,3 +45,38 @@ export const ProductInputSchema = z.object({
     .int()
     .nonnegative('Number of sales must be a non-negative integer'),
 });
+
+// order item
+
+export const OrderItemSchema = z.object({
+  clientId: z.string().min(1, 'Client ID is required'),
+  product: z.string().min(1, 'Product ID is required'),
+  name: z.string().min(1, 'Product name is required'),
+  slug: z.string().min(1, 'Product slug is required'),
+  category: z.string().min(1, 'Product category is required'),
+  quantity: z
+    .number()
+    .int()
+    .nonnegative('Quantity must be a non-negative integer'),
+  countInStock: z
+    .number()
+    .int()
+    .nonnegative('Count in stock must be a non-negative integer'),
+  image: z.string().min(1, 'Product image is required'),
+  price: Price('Price'),
+  size: z.string().optional(),
+  color: z.string().optional(),
+});
+
+export const CartSchema = z.object({
+  items: z
+    .array(OrderItemSchema)
+    .min(1, 'Order must contain at least one item'),
+  itemsPrice: z.number(),
+  taxPrice: z.optional(z.number()),
+  shippingPrice: z.optional(z.number()),
+  totalPrice: z.number(),
+  paymentMethod: z.optional(z.string()),
+  deliveryDateIndex: z.optional(z.number()),
+  expectedDeliveryDate: z.optional(z.date()),
+});
