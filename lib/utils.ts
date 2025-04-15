@@ -18,7 +18,8 @@ export const toSlug = (text: string): string =>
     .toLowerCase() // Convert to lowercase
     .replace(/[^\w\s-]/g, '') // Remove non-word, non-whitespace, and non-hyphen characters
     .replace(/\s+/g, '-') // Replace whitespace with hyphens
-    .replace(/^-+|-+$/g, ''); // Trim leading and trailing hyphens
+    .replace(/^-+|-+$/g, '') // Trim leading and trailing hyphens
+    .replace(/-+/g, '-'); // Replace multiple hyphens with a single hyphen
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
   currency: 'USD',

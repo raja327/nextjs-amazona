@@ -16,7 +16,8 @@ const initialState: Cart = {
 interface CartStore {
   cart: Cart;
   addItem: (item: OrderItem, quantity: number) => Promise<string>;
-  init: () => void;
+  updateItem: (item: OrderItem, quantity: number) => Promise<void>;
+  removeItem: (item: OrderItem) => void;
 }
 
 const useCartStore = create(
@@ -73,6 +74,47 @@ const useCartStore = create(
             x.color === item.color
         )?.clientId!;
       },
+      updateItem: async (item: OrderItem, quantity: number) => {
+        const { items } = get().cart;
+        const exist = items.find(
+          (x) =>
+            x.product === item.product &&
+            x.size === item.size &&
+            x.color === item.color
+        );
+        if (!exist) return;
+        const updatedCartItems = items.map((x) =>
+          x.product === item.product &&
+          x.size === item.size &&
+          x.color === item.color
+            ? { ...x, quantity }
+            : x
+        );
+        set({
+          cart: {
+            ...get().cart,
+            items: updatedCartItems,
+            ...(await calcDeliveryDateAndPrice({ items: updatedCartItems })),
+          },
+        });
+      },
+      removeItem: async (item: OrderItem) => {
+        const { items } = get().cart;
+        const updatedCartItems = items.filter(
+          (x) =>
+            x.product !== item.product ||
+            x.size !== item.size ||
+            x.color !== item.color
+        );
+        set({
+          cart: {
+            ...get().cart,
+            items: updatedCartItems,
+            ...(await calcDeliveryDateAndPrice({ items: updatedCartItems })),
+          },
+        });
+      },
+
       init: () => set({ cart: initialState }),
     }),
     {
