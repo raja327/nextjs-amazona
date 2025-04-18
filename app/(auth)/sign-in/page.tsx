@@ -6,6 +6,7 @@ import SeparatorWithOr from '@/components/shared/separator-or';
 import { APP_NAME } from '@/lib/constants';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { GoogleSignInForm } from './google-signin-form';
 
 export const metadata = {
   title: 'Sign In',
@@ -29,6 +30,10 @@ export default async function SignIn(props: {
         <CardContent>
           <div>
             <CredentialsSignInForm />
+          </div>
+          <SeparatorWithOr>OR</SeparatorWithOr>
+          <div className="mt-4">
+            <GoogleSignInForm />
           </div>
         </CardContent>
       </Card>
