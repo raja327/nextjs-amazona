@@ -19,6 +19,7 @@ interface CartStore {
   addItem: (item: OrderItem, quantity: number) => Promise<string>;
   updateItem: (item: OrderItem, quantity: number) => Promise<void>;
   removeItem: (item: OrderItem) => void;
+  clearCart: () => void;
 
   setShippingAddress: (shippingAddress: ShippingAddress) => Promise<void>;
   setPaymentMethod: (paymentMethod: string) => void;

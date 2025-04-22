@@ -1,5 +1,11 @@
 import { z } from 'zod';
 import { formatNumberWithDecimal } from './utils';
+
+// common
+const MongoId = z
+  .string()
+  .regex(/^[a-fA-F0-9]{24}$/, { message: 'Invalid Mongo ID' });
+
 const Price = (field: string) =>
   z.coerce
     .number()
@@ -77,6 +83,44 @@ export const ShippingAddressSchema = z.object({
   province: z.string().min(1, 'Province is required'),
   phone: z.string().min(1, 'Phone number is required'),
   country: z.string().min(1, 'Country is required'),
+});
+
+// order
+export const OrderInputSchema = z.object({
+  user: z.union([
+    MongoId,
+    z.object({
+      name: z.string(),
+      email: z.string().email(),
+    }),
+  ]),
+  items: z
+    .array(OrderItemSchema)
+    .min(1, 'Order must contain at least one item'),
+  shippingAddress: ShippingAddressSchema,
+  paymentMethod: z.string().min(1, 'Payment method is required'),
+  paymentResult: z
+    .object({
+      id: z.string(),
+      status: z.string(),
+      email_address: z.string(),
+      pricePaid: z.string(),
+    })
+    .optional(),
+  itemsPrice: Price('Items Price'),
+  shippingPrice: Price('Shipping Price'),
+  taxPrice: Price('Tax Price'),
+  totalPrice: Price('Total price'),
+  expectedDeliveryDate: z
+    .date()
+    .refine(
+      (value) => value > new Date(),
+      'Expected delivery date must be in the future'
+    ),
+  isDelivered: z.boolean().default(false),
+  deliveredAt: z.date().optional(),
+  isPaid: z.boolean().default(false),
+  paidAt: z.date().optional(),
 });
 
 export const CartSchema = z.object({

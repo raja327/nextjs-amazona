@@ -44,6 +44,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import ProductPrice from '@/components/shared/products/product-price';
 import CheckoutFooter from './checkout-footer';
+import { createOrder } from '@/lib/actions/order.action';
+import { toast } from 'sonner';
 
 const shippingAddressDefaultValues =
   process.env.NODE_ENV === 'development'
@@ -84,6 +86,7 @@ const CheckoutForm = () => {
     updateItem,
     removeItem,
     setDeliveryDateIndex,
+    clearCart,
   } = useCartStore();
   const isMounted = useIsMounted();
 
@@ -114,7 +117,26 @@ const CheckoutForm = () => {
     useState<boolean>(false);
 
   const handlePlaceOrder = async () => {
-    // todo here:place order
+    const res = await createOrder({
+      items,
+      shippingAddress,
+      expectedDeliveryDate: calculateFutureDate(
+        AVAILABLE_DELIVERY_DATES[deliveryDateIndex!].daysToDeliver
+      ),
+      deliveryDateIndex,
+      paymentMethod,
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
+    });
+    if (!res.success) {
+      toast.error(res.message);
+    } else {
+      toast.success(res.message);
+      clearCart();
+      router.push(`/checkout/${res.data?.orderId}`);
+    }
   };
 
   const handleSelectPaymentMethod = () => {
