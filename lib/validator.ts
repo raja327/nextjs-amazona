@@ -194,3 +194,7 @@ export const UserSignUpSchema = UserInputSchema.extend({
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
+
+export const UserNameSchema = z.object({
+  name: UserName,
+});
